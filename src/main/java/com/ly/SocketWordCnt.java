@@ -1,4 +1,14 @@
-public class FlinkTestTask {
+package com.ly;
+
+import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.utils.ParameterTool;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.util.Collector;
+
+public class SocketWordCnt {
     private static final String IP = "192.168.199.102";
     public static void main(String[] args) throws Exception {
         // The port to connect
