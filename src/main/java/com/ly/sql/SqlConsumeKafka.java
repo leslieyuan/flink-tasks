@@ -2,9 +2,7 @@ package com.ly.sql;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
-import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,9 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -46,16 +42,18 @@ public class SqlConsumeKafka {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
 
-        // Create a DataStream from Kafka
-        // Trans to a Map stream
-        // Extract col1, col2...
+        /* Create a DataStream from Kafka
+        *  Trans to a Map stream
+        *  Extract col1, col2...
+        */
         FlinkKafkaConsumer<String> kfkConsumer = new FlinkKafkaConsumer<String>(SOURCE_TOPIC, new SimpleStringSchema(), KAFKA_PROPERTIES);
         DataStream<String> stringDataStream = env.addSource(kfkConsumer);
         DataStream<Map<String, Object>> mapDataStream = stringDataStream.flatMap(new FlatMapFunction<String, Map<String, Object>>() {
             @Override
             public void flatMap(String s, Collector<Map<String, Object>> collector) throws Exception {
                 ObjectMapper objectMapper = new ObjectMapper();
-                Map<String, Object> out = objectMapper.readValue(s, new TypeReference<Map<String, Object>>() {});
+                Map<String, Object> out = objectMapper.readValue(s, new TypeReference<Map<String, Object>>() {
+                });
                 // todo: some complex parse
                 collector.collect(out);
             }
@@ -75,8 +73,9 @@ public class SqlConsumeKafka {
                 .filter("clo1 === 'SOME_IGNORED'")
                 .select("clo1, clo2");
 
-        // Result table to DataStream
-        // Sink to kafka
+        /* Result table to DataStream
+         * Sink to kafka
+         */
         DataStream<Row> rowDataStream = tableEnv.toAppendStream(resultTable, Row.class);
         rowDataStream.addSink(new FlinkKafkaProducer<Row>(SINK_TOPIC, new KafkaSerializationSchema<Row>() {
             @Override
