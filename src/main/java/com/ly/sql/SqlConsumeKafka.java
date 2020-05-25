@@ -27,19 +27,20 @@ import java.util.Properties;
 
 public class SqlConsumeKafka {
     private static final Logger log = LoggerFactory.getLogger(SqlConsumeKafka.class);
-    private static final String SOURCE_TOPIC = "";
-    private static final String SINK_TOPIC = "";
+    private static final String SOURCE_TOPIC = "t_yl_flink";
+    private static final String SINK_TOPIC = "t_yl_flink_sink";
     private static final Properties KAFKA_PROPERTIES = new Properties();
 
     static {
-        KAFKA_PROPERTIES.setProperty(KafkaConfig.BOOTSTRAP_SERVERS, "192.168.199.102:9092");
-        KAFKA_PROPERTIES.setProperty(KafkaConfig.GROUP_ID, "sql");
+        KAFKA_PROPERTIES.setProperty(KafkaConfig.BOOTSTRAP_SERVERS, "10.101.232.114:6667");
+        KAFKA_PROPERTIES.setProperty(KafkaConfig.GROUP_ID, "yl_test");
     }
 
-    private static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         // Get the table execute Environment, explicitly set old Planner
-        EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useOldPlanner().inStreamingMode().build();
+        EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        env.setParallelism(1);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
 
         /* Create a DataStream from Kafka
@@ -47,30 +48,36 @@ public class SqlConsumeKafka {
         *  Extract col1, col2...
         */
         FlinkKafkaConsumer<String> kfkConsumer = new FlinkKafkaConsumer<String>(SOURCE_TOPIC, new SimpleStringSchema(), KAFKA_PROPERTIES);
+        kfkConsumer.setStartFromLatest();
         DataStream<String> stringDataStream = env.addSource(kfkConsumer);
-        DataStream<Map<String, Object>> mapDataStream = stringDataStream.flatMap(new FlatMapFunction<String, Map<String, Object>>() {
+        DataStream<UserTime> pojoDataStream = stringDataStream.flatMap(new FlatMapFunction<String, UserTime>() {
             @Override
-            public void flatMap(String s, Collector<Map<String, Object>> collector) throws Exception {
+            public void flatMap(String s, Collector<UserTime> collector) throws Exception {
                 ObjectMapper objectMapper = new ObjectMapper();
-                Map<String, Object> out = objectMapper.readValue(s, new TypeReference<Map<String, Object>>() {
+                UserTime out = objectMapper.readValue(s, new TypeReference<UserTime>() {
                 });
                 // todo: some complex parse
                 collector.collect(out);
             }
         });
-        DataStream<Tuple2<String, String>> tuple2DataStream = mapDataStream.map(new MapFunction<Map<String, Object>, Tuple2<String, String>>() {
+        DataStream<Tuple2<String, Long>> tuple2DataStream = pojoDataStream.flatMap(new FlatMapFunction<UserTime, Tuple2<String, Long>>() {
             @Override
-            public Tuple2<String, String> map(Map<String, Object> value) throws Exception {
-                return new Tuple2<String, String>(value.get("clo1").toString(), value.get("clo2").toString());
+            public void flatMap(UserTime value, Collector<Tuple2<String, Long>> out) throws Exception {
+                out.collect(Tuple2.of(value.getUser(), value.getTime()));
             }
         });
 
         // Convert DataStream to Table
         Table table = tableEnv.fromDataStream(tuple2DataStream, "clo1, clo2");
+        // Register Table view Test
+//        tableEnv.createTemporaryView("Test", tuple2DataStream, "clo1, clo2");
 
         // Table sql
+//        Table resultTable = tableEnv.sqlQuery(
+//                "SELECT clo1, clo2 FROM " + table + " WHERE clo1 == 'SOME_IGNORED'");
+        // Table api
         Table resultTable = table
-                .filter("clo1 === 'SOME_IGNORED'")
+                .filter("clo1 === 'yl'")
                 .select("clo1, clo2");
 
         /* Result table to DataStream
