@@ -1,4 +1,4 @@
-package com.ly.sql;
+package com.ly.entity;
 
 public interface KafkaConfig {
     String BOOTSTRAP_SERVERS = "bootstrap.servers";

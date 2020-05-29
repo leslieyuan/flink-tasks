@@ -1,4 +1,4 @@
-package com.ly.sql;
+package com.ly.entity;
 
 import java.io.Serializable;
 

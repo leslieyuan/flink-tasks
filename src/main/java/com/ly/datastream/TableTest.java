@@ -1,7 +1,8 @@
-package com.ly.sql;
+package com.ly.datastream;
 
+import com.ly.entity.KafkaConfig;
+import com.ly.entity.UserTime;
 import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.type.TypeReference;
@@ -22,11 +23,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.Properties;
 
-public class SqlConsumeKafka {
-    private static final Logger log = LoggerFactory.getLogger(SqlConsumeKafka.class);
+public class TableTest {
+    private static final Logger log = LoggerFactory.getLogger(TableTest.class);
     private static final String SOURCE_TOPIC = "t_yl_flink";
     private static final String SINK_TOPIC = "t_yl_flink_sink";
     private static final Properties KAFKA_PROPERTIES = new Properties();
@@ -92,6 +92,6 @@ public class SqlConsumeKafka {
         }, KAFKA_PROPERTIES, FlinkKafkaProducer.Semantic.EXACTLY_ONCE));
 
         // Start
-        env.execute("table api test");
+        env.execute("table api MhzSqlDemo");
     }
 }
