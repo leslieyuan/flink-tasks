@@ -1,23 +1,12 @@
 # flink_demo
 some code about flink development
 
-### design scheme
-复杂嵌套json的scheme定义举例
-```json
-{
-type: 'object',
-properties: {
-	name:{type:'string'},
-	data:{
-		type:'object',
-		properties:{
-		ccount:{
-			type:'integer'
-		},
-		ctimestamp:{
-			type:'date-time'
-		}
-		}}
-	}
-}
-```
+### kafka source
+example messages:
+{"name":"yuanlong","data":{"ccount":10, "ctimestamp":1590720515000}, "wtime":"1590720515000"}
+{"name":"yuanlong","data":{"ccount":11, "ctimestamp":1590720515000}, "wtime":"1590720525000"}
+{"name":"minhezhao","data":{"ccount":10, "ctimestamp":1590720515000}, "wtime":"1590720515000"}
+
+{"name":"yuanlong","data":{"ccount":10, "ctimestamp":1590720515000}, "wtime":"1590720515000"}
+{"name":"yuanlong","data":{"ccount":11, "ctimestamp":1590720515000}, "wtime":"1590720525000"}
+{"name":"minhezhao","data":{"ccount":10, "ctimestamp":1590720515000}, "wtime":"1590720515000"}
