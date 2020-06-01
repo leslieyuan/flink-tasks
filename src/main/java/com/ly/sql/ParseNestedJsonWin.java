@@ -1,12 +1,20 @@
 package com.ly.sql;
 
+import com.ly.log4j.Logs;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
-import org.apache.flink.table.descriptors.*;
+import org.apache.flink.table.descriptors.FileSystem;
+import org.apache.flink.table.descriptors.OldCsv;
+import org.apache.flink.table.descriptors.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.apache.flink.table.api.DataTypes.*;
+import java.io.IOException;
+
+import static org.apache.flink.table.api.DataTypes.STRING;
+import static org.apache.flink.table.api.DataTypes.TIMESTAMP;
 
 /**
  * @author yuanlong
@@ -16,11 +24,14 @@ import static org.apache.flink.table.api.DataTypes.*;
  */
 
 public class ParseNestedJsonWin {
+    private static final Logger log = LoggerFactory.getLogger(ParseNestedJsonWin.class);
+
     public static void main(String[] args) throws Exception {
         EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(2);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
+
 
         tableEnv.sqlUpdate("CREATE TABLE SourceKafkaTable(\n" +
                 "    name VARCHAR,\n" +
@@ -59,12 +70,19 @@ public class ParseNestedJsonWin {
                                 .fieldDelimiter(",")
                 ).createTemporaryTable("SinkTable");
 
+
         tableEnv.sqlUpdate("INSERT INTO SinkTable " +
                 "SELECT " +
                 "TUMBLE_START(ts, INTERVAL '1' MINUTE) AS window_time," +
                 "name, SUM(data.ccount) as `count` " +
                 "FROM SourceKafkaTable " +
                 "GROUP BY TUMBLE(ts, INTERVAL '1' MINUTE),name");
+
+        try {
+            Logs.init("t_yl_flink_sink");
+        } catch (IOException ex) {
+            log.error("log initial failed.");
+        }
 
         tableEnv.execute("kafka_2_file");
     }
