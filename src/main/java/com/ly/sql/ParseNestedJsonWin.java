@@ -1,6 +1,9 @@
 package com.ly.sql;
 
 import com.ly.log4j.Logs;
+import org.apache.flink.runtime.state.StateBackend;
+import org.apache.flink.runtime.state.filesystem.FsStateBackend;
+import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
@@ -21,9 +24,11 @@ public class ParseNestedJsonWin {
 
     public static void main(String[] args) throws Exception {
 
-
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(2);
+        env.enableCheckpointing(60 * 1000, CheckpointingMode.EXACTLY_ONCE);
+        StateBackend stateBackend = new FsStateBackend("hdfs:///flink/checkpoint/logtask");
+        env.setStateBackend(stateBackend);
+
         EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
 
