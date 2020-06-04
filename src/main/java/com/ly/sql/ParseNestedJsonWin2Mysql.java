@@ -20,7 +20,7 @@ public class ParseNestedJsonWin2Mysql {
     public static void main(String[] args) throws Exception {
         // 环境变量
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(2);e
+        env.setParallelism(2);
         EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
 
