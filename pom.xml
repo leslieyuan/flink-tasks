@@ -104,7 +104,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass></mainClass>
+                            <mainClass>com.ly.sql.ParseNestedJsonWin</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
