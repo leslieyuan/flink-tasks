@@ -113,6 +113,24 @@ name VARCHAR,
   )
 
 
+CREATE TABLE SinkTable(
+window_time TIMESTAMP(3),
+name VARCHAR,
+`count` BIGINT
+) WITH (
+  'connector.type' = 'jdbc',
+  'connector.url' = 'jdbc:mysql://10.101.232.114:3306/flink-test?useUnicode=true&characterEncoding=UTF-8',
+  'connector.table' = 'sink_test',
+  'connector.username' = 'remote',
+  'connector.password' = 'C1stc.0e',
+  'connector.lookup.cache.ttl' = '60s',
+  'connector.lookup.cache.max-rows' = '100000',
+  'connector.lookup.max-retries' = '3',
+  'connector.write.flush.max-rows' = '5000',
+  'connector.write.flush.interval' = '2s',
+  'connector.write.max-retries' = '3'
+);
+
 
 
 

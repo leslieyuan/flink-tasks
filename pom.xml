@@ -53,11 +53,11 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-jdbc -->
-        <!--dependency>
+        <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-jdbc_2.11</artifactId>
             <version>${flink.version}</version>
-        </dependency-->
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-sql-connector-kafka -->
 
         <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-json -->
