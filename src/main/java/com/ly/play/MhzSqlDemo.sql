@@ -131,6 +131,70 @@ name VARCHAR,
   'connector.write.max-retries' = '3'
 );
 
+-- file source table
+CREATE TABLE SourceKafkaTable(
+name VARCHAR,
+data ROW<ccount BIGINT, ctimestamp BIGINT>,
+wtime BIGINT,
+ts as TO_TIMESTAMP(FROM_UNIXTIME(wtime /1000,'yyyy-MM-dd HH:mm:ss')),
+WATERMARK FOR ts AS ts - INTERVAL '5' SECOND
+) WITH (
+-- declare the external system to connect to
+'connector.type' = 'kafka',
+'connector.version' = 'universal',
+'connector.topic' = 't_yl_flink',
+'connector.startup-mode' = 'specific-offsets',
+'connector.specific-offsets' = 'partition:0,offset:0; partition:1,offset:0',
+'connector.properties.zookeeper.connect' = '10.101.232.114:2181',
+'connector.properties.bootstrap.servers' = '10.101.232.114:6667',
+-- specify the update-mode for streaming tables
+'update-mode' = 'append',
+-- declare a format for this system
+'format.type' = 'json',
+'format.derive-schema' = 'true'
+  )
+
+CREATE TABLE SinkTable(
+window_time TIMESTAMP(3),
+name VARCHAR,
+`count` BIGINT
+) WITH (
+-- declare the external system to connect to
+'connector.type' = 'filesystem',
+-- specify path
+'connector.path' = 'C:\Users\yuanl\Desktop\destination.txt',
+-- specify the update-mode for streaming tables
+'update-mode' = 'append',
+-- declare a format for this system
+'format.type' = 'csv',
+'format.derive-schema' = 'true'
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
