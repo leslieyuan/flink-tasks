@@ -33,6 +33,7 @@ public class ParseNestedJsonWin {
 
         tableEnv.sqlUpdate("CREATE TABLE SourceKafkaTable(\n" +
                 "    name VARCHAR,\n" +
+                "    name1 AS name," +
                 "    data ROW<ccount BIGINT, ctimestamp BIGINT>,\n" +
                 "    wtime BIGINT,\n" +
                 "    ts as TO_TIMESTAMP(FROM_UNIXTIME(wtime /1000,'yyyy-MM-dd HH:mm:ss')),\n" +
@@ -54,8 +55,8 @@ public class ParseNestedJsonWin {
                 "    'format.derive-schema' = 'true'\n" +
                 "      )");
 
-        Table tmp = tableEnv.from("SourceKafkaTable").renameColumns("name as name1");
-        tableEnv.createTemporaryView("tmp", tmp);
+//        Table tmp = tableEnv.from("SourceKafkaTable").renameColumns("name as name1");
+//        tableEnv.createTemporaryView("tmp", tmp);
 
         tableEnv.sqlUpdate("CREATE TABLE SinkTable(\n" +
                 "window_time TIMESTAMP(3),\n" +
@@ -95,7 +96,7 @@ public class ParseNestedJsonWin {
                 "SELECT " +
                 "TUMBLE_START(ts, INTERVAL '1' MINUTE) AS window_time," +
                 "name1, SUM(data.ccount) as `count` " +
-                "FROM tmp " +
+                "FROM SourceKafkaTable " +
                 "GROUP BY TUMBLE(ts, INTERVAL '1' MINUTE),name1");
 
 
