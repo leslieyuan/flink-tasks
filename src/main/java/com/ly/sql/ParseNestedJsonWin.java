@@ -6,6 +6,7 @@ import org.apache.flink.runtime.state.filesystem.FsStateBackend;
 import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +26,8 @@ public class ParseNestedJsonWin {
     public static void main(String[] args) throws Exception {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.enableCheckpointing(60 * 1000, CheckpointingMode.EXACTLY_ONCE);
-        StateBackend stateBackend = new FsStateBackend("hdfs:///flink/checkpoint/logtask");
-        env.setStateBackend(stateBackend);
 
+        env.setParallelism(1);
         EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
 
@@ -42,8 +41,8 @@ public class ParseNestedJsonWin {
                 "    -- declare the external system to connect to\n" +
                 "    'connector.type' = 'kafka',\n" +
                 "    'connector.version' = 'universal',\n" +
-                "    'connector.topic' = 't_yl_flink',\n" +
-                "    'connector.startup-mode' = 'latest-offset',\n" +
+                "    'connector.topic' = 't_flinksql',\n" +
+                "    'connector.startup-mode' = 'earliest-offset',\n" +
                 "    'connector.properties.zookeeper.connect' = '10.101.232.114:2181',\n" +
                 "    'connector.properties.bootstrap.servers' = '10.101.232.114:6667',\n" +
                 "    'connector.properties.group.id' = 'testGroup',\n" +
@@ -54,6 +53,9 @@ public class ParseNestedJsonWin {
                 "    'format.type' = 'json',\n" +
                 "    'format.derive-schema' = 'true'\n" +
                 "      )");
+
+        Table tmp = tableEnv.from("SourceKafkaTable").renameColumns("name as name1");
+        tableEnv.createTemporaryView("tmp", tmp);
 
         tableEnv.sqlUpdate("CREATE TABLE SinkTable(\n" +
                 "window_time TIMESTAMP(3),\n" +
@@ -92,9 +94,9 @@ public class ParseNestedJsonWin {
         tableEnv.sqlUpdate("INSERT INTO SinkTable " +
                 "SELECT " +
                 "TUMBLE_START(ts, INTERVAL '1' MINUTE) AS window_time," +
-                "name, SUM(data.ccount) as `count` " +
-                "FROM SourceKafkaTable " +
-                "GROUP BY TUMBLE(ts, INTERVAL '1' MINUTE),name");
+                "name1, SUM(data.ccount) as `count` " +
+                "FROM tmp " +
+                "GROUP BY TUMBLE(ts, INTERVAL '1' MINUTE),name1");
 
 
         try {

@@ -25,7 +25,7 @@ public class ParseJson {
                         new Kafka()
                                 .version("universal")
                                 .topic("t_yl_flink")
-                                .startFromLatest()
+                                .startFromEarliest()
                                 .property("bootstrap.servers", "10.101.232.114:6667")
                                 .property("zookeeper.connect", "10.101.232.114:2181")
                                 .property("group.id", "MhzSqlDemo")
