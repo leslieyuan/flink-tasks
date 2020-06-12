@@ -71,48 +71,11 @@ SELECT SJSWJG_DM,SJSWJGMC,SWJG_DM,SWJGMC
 FROM t_nftywll "
 
 
-##################################### my test #########################################################################
+##################################### my test start #########################################################################
 
-CREATE TABLE SourceKafkaTable(
-name VARCHAR,
-data ROW<ccount BIGINT, ctimestamp BIGINT>,
-wtime BIGINT,
-ts as TO_TIMESTAMP(FROM_UNIXTIME(wtime /1000,'yyyy-MM-dd HH:mm:ss')),
-WATERMARK FOR ts AS ts - INTERVAL '5' SECOND
-) WITH (
--- declare the external system to connect to
-'connector.type' = 'kafka',
-'connector.version' = 'universal',
-'connector.topic' = 't_yl_flink',
-'connector.startup-mode' = 'latest-offset',
-'connector.properties.zookeeper.connect' = '10.101.232.114:2181',
-'connector.properties.bootstrap.servers' = '10.101.232.114:6667',
--- specify the update-mode for streaming tables
-'update-mode' = 'append',
--- declare a format for this system
-'format.type' = 'json',
-'format.derive-schema' = 'true'
-  )
+CREATE TABLE SourceKafkaTable( name VARCHAR, data ROW<ccount BIGINT, ctimestamp BIGINT>, wtime BIGINT, ts as TO_TIMESTAMP(FROM_UNIXTIME(wtime /1000,'yyyy-MM-dd HH:mm:ss')), WATERMARK FOR ts AS ts - INTERVAL '5' SECOND ) WITH ( 'connector.type' = 'kafka', 'connector.version' = 'universal', 'connector.topic' = 't_flinksql', 'connector.startup-mode' = 'latest-offset', 'connector.properties.zookeeper.connect' = '10.101.232.114:2181', 'connector.properties.bootstrap.servers' = '10.101.232.114:6667', 'update-mode' = 'append', 'format.type' = 'json', 'format.derive-schema' = 'true' ); CREATE TABLE SinkTable( window_time TIMESTAMP(3), name VARCHAR, `count` BIGINT ) WITH ( 'connector.type' = 'kafka', 'connector.version' = 'universal', 'connector.topic' = 't_yl_flink_2', 'connector.properties.zookeeper.connect' = '10.101.232.114:2181', 'connector.properties.bootstrap.servers' = '10.101.232.114:6667', 'update-mode' = 'append', 'format.type' = 'json', 'format.derive-schema' = 'true' ); INSERT INTO SinkTable SELECT TUMBLE_START(ts, INTERVAL '1' MINUTE) AS window_time, name, SUM(data.ccount) as `count` FROM SourceKafkaTable GROUP BY TUMBLE(ts, INTERVAL '1' MINUTE),name
 
-CREATE TABLE SinkTable(
-window_time TIMESTAMP(3)
-name VARCHAR,
-`count` BIGINT
-) WITH (
--- declare the external system to connect to
-'connector.type' = 'kafka',
-'connector.version' = 'universal',
-'connector.topic' = 't_yl_flink_2',
-'connector.properties.zookeeper.connect' = '10.101.232.114:2181',
-'connector.properties.bootstrap.servers' = '10.101.232.114:6667',
--- specify the update-mode for streaming tables
-'update-mode' = 'append',
--- declare a format for this system
-'format.type' = 'json',
-'format.derive-schema' = 'true'
-  )
-
-
+##################################### my test end ######################################################
 CREATE TABLE SinkTable(
 window_time TIMESTAMP(3),
 name VARCHAR,
@@ -170,6 +133,72 @@ name VARCHAR,
 'format.derive-schema' = 'true'
   )
 
+CREATE TABLE user_log (
+plateno VARCHAR,
+platecolor VARCHAR,
+deviceid VARCHAR,
+passtime VARCHAR
+) WITH (
+'connector.type' = 'kafka',
+'connector.version' = 'universal',
+'connector.topic' = 'test-tzl-01',
+'connector.startup-mode' = 'earliest-offset',
+'connector.properties.0.key' = 'zookeeper.connect',
+'connector.properties.0.value' = 'hdp1.ambari:2181',
+'connector.properties.1.key' = 'bootstrap.servers',
+'connector.properties.1.value' = 'hdp1.ambari:6667',
+'update-mode' = 'append','format.type' = 'json',
+'format.derive-schema' = 'true');
+CREATE TABLE vechile_info (
+plate_no VARCHAR,
+plate_color VARCHAR,
+device_id  VARCHAR,
+pass_time  VARCHAR
+) WITH (
+'connector.type' = 'jdbc',
+'connector.url' = 'jdbc:mysql://10.101.232.114:3306/flink-test',
+'connector.table' = 'vechile_info',
+'connector.username' = 'remote',
+'connector.password' = 'C1stc.0e',
+'connector.write.flush.max-rows' = '1');
+INSERT INTO vechile_info
+SELECT plateno plate_no,platecolor plate_color,deviceid  device_id,'dddd' pass_time FROM user_log
+
+
+CREATE TABLE user_log (
+plateno VARCHAR,
+platecolor VARCHAR,
+deviceid VARCHAR,
+passtime VARCHAR
+) WITH (
+'connector.type' = 'kafka',
+'connector.version' = 'universal',
+'connector.topic' = 'test-tzl-01',
+'connector.startup-mode' = 'specific-offsets',
+'connector.properties.0.key' = 'zookeeper.connect',
+'connector.properties.0.value' = 'hdp1.ambari:2181',
+'connector.properties.1.key' = 'bootstrap.servers',
+'connector.properties.1.value' = 'hdp1.ambari:6667',
+'update-mode' = 'append','format.type' = 'json',
+'format.derive-schema' = 'true','connector.specific-offsets' = 'partition:0,offset:0'));
+CREATE TABLE vechile_info (
+plate_no VARCHAR,
+plate_color VARCHAR,
+device_id  VARCHAR,
+pass_time  VARCHAR
+) WITH (
+-- declare the external system to connect to
+'connector.type' = 'filesystem',
+-- specify path
+'connector.path' = 'C:\Users\yuanl\Desktop\destination.txt',
+-- specify the update-mode for streaming tables
+'update-mode' = 'append',
+-- declare a format for this system
+'format.type' = 'csv',
+'format.derive-schema' = 'true'
+  );
+INSERT INTO vechile_info
+SELECT plateno plate_no,platecolor plate_color,deviceid  device_id,'dddd' pass_time FROM user_log
 
 
 
