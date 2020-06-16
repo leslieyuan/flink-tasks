@@ -204,27 +204,46 @@ SELECT plateno plate_no,platecolor plate_color,deviceid  device_id,'dddd' pass_t
 
 
 
+CREATE TABLE source_info(
+name VARCHAR,
+data ROW<ccount BIGINT, ctimestamp BIGINT>,
+wtime BIGINT,
+ts as TO_TIMESTAMP(FROM_UNIXTIME(wtime /1000,'yyyy-MM-dd HH:mm:ss')),
+) WITH (
+'connector.type' = 'kafka',
+'connector.version' = 'universal',
+'connector.topic' = 't_yl_flink',
+'connector.properties.group.id' = 'performance'
+'connector.startup-mode' = 'earliest-offsets',
+'connector.properties.zookeeper.connect' = '10.101.236.2:2181',
+'connector.properties.bootstrap.servers' = '10.101.236.2:6667',
+'update-mode' = 'append',
+'format.type' = 'json',
+'format.derive-schema' = 'true'
+  )
+
+CREATE TABLE name_count_info(
+ts TIMESTAMP(3),
+name VARCHAR,
+ccount BIGINT
+) WITH (
+'connector.type' = 'kafka',
+'connector.version' = 'universal',
+'connector.topic' = 't_yl_flink',
+'connector.properties.zookeeper.connect' = '10.101.236.2:2181',
+'connector.properties.bootstrap.servers' = '10.101.236.2:6667',
+'update-mode' = 'append',
+'format.type' = 'json',
+'format.derive-schema' = 'true'
+  )
+
+INSERT INTO name_count_info SELECT ts, name, SUM(data.ccount) as ccount FROM source_info GROUP BY name
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CREATE TABLE source_info( user_id VARCHAR, item_id VARCHAR, category_id VARCHAR , behavior VARCHAR , ts VARCHAR ) WITH ( 'connector.type' = 'kafka', 'connector.version' = 'universal', 'connector.topic' = 'xingneng2', 'connector.properties.group.id' = 'performance', 'connector.startup-mode' = 'earliest-offset', 'connector.properties.zookeeper.connect' = '10.101.236.2:2181', 'connector.properties.bootstrap.servers' = '10.101.236.2:6667', 'update-mode' = 'append', 'format.type' = 'json', 'format.derive-schema' = 'true' ); CREATE TABLE behavior_info( user VARCHAR , item VARCHAR ) WITH ( 'connector.type' = 'jdbc', 'connector.url' = 'jdbc:mysql://10.101.232.114:3306/flink-test', 'connector.table' = 'behavior_info', 'connector.username' = 'remote', 'connector.password' = 'C1stc.0e'); INSERT INTO behavior_info SELECT user_id as user, item_id as item FROM source_info
 
 
 

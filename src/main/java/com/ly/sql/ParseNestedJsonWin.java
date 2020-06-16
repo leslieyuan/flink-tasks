@@ -1,17 +1,10 @@
 package com.ly.sql;
 
-import com.ly.log4j.Logs;
-import org.apache.flink.runtime.state.StateBackend;
-import org.apache.flink.runtime.state.filesystem.FsStateBackend;
-import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
-import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * @author yuanlong
@@ -100,11 +93,6 @@ public class ParseNestedJsonWin {
                 "GROUP BY TUMBLE(ts, INTERVAL '1' MINUTE),name1");
 
 
-        try {
-            Logs.init("t_yl_flink_sink");
-        } catch (IOException ex) {
-            log.error("log initial failed.");
-        }
 
         tableEnv.execute("kafka_2_file");
     }

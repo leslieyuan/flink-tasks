@@ -70,25 +70,40 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-log4j-appender</artifactId>
-            <version>2.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka-clients</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.3.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.9.1</version>
+            <groupId>net.logstash.log4j</groupId>
+            <artifactId>jsonevent-layout</artifactId>
+            <version>1.7</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-parquet -->
+        <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+        <!--dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency-->
+
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
         <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-parquet_2.11</artifactId>
-            <version>1.10.0</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.10.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+
 
     </dependencies>
 
