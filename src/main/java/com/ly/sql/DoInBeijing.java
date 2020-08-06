@@ -24,9 +24,9 @@ public class DoInBeijing {
                 "\t\t\t'connector.topic' = 'test1',\n" +
                 "\t\t\t'connector.startup-mode' = 'latest-offset',\n" +
                 "\t\t\t'connector.properties.0.key' = 'zookeeper.connect',\n" +
-                "\t\t\t'connector.properties.0.value' = '172.16.87.101:2181,172.16.87.102:2181,172.16.87.103:2181',\n" +
+                "\t\t\t'connector.properties.0.value' = '172.16.87.64:2181',\n" +
                 "\t\t\t'connector.properties.1.key' = 'bootstrap.servers',\n" +
-                "\t\t\t'connector.properties.1.value' = '172.16.87.101:6667',\n" +
+                "\t\t\t'connector.properties.1.value' = '172.16.87.64:6667',\n" +
                 "\t\t\t'connector.properties.2.key' = 'group.id',\n" +
                 "\t\t\t'connector.properties.2.value' = '02020062216021101400000101001103',\n" +
                 "\t\t\t'format.type' = 'json',\n" +
@@ -43,9 +43,9 @@ public class DoInBeijing {
                 "\t\t\t'connector.topic' = 'test2',\n" +
                 "\t\t\t'connector.startup-mode' = 'latest-offset',\n" +
                 "\t\t\t'connector.properties.0.key' = 'zookeeper.connect',\n" +
-                "\t\t\t'connector.properties.0.value' = '172.16.87.101:2181,172.16.87.102:2181,172.16.87.103:2181',\n" +
+                "\t\t\t'connector.properties.0.value' = '172.16.87.64:2181',\n" +
                 "\t\t\t'connector.properties.1.key' = 'bootstrap.servers',\n" +
-                "\t\t\t'connector.properties.1.value' = '172.16.87.101:6667',\n" +
+                "\t\t\t'connector.properties.1.value' = '172.16.87.64:6667',\n" +
                 "\t\t\t'connector.properties.2.key' = 'group.id',\n" +
                 "\t\t\t'connector.properties.2.value' = '02020062216021101400000101001103',\n" +
                 "\t\t\t'format.type' = 'json',\n" +
