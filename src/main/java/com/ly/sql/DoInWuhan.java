@@ -1,8 +1,12 @@
 package com.ly.sql;
 
+import org.apache.flink.api.common.restartstrategy.RestartStrategies;
+import org.apache.flink.api.common.time.Time;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
+
+import java.util.concurrent.TimeUnit;
 
 public class DoInWuhan {
     public static void main(String[] args) throws Exception {
@@ -10,6 +14,8 @@ public class DoInWuhan {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
+        env.enableCheckpointing(30000);
+        env.setRestartStrategy(RestartStrategies.fixedDelayRestart(5, Time.of(10, TimeUnit.SECONDS)));
 
         String jobName = args[0];
 
@@ -22,8 +28,8 @@ public class DoInWuhan {
                 ") with (\n" +
                 "  'connector.type' = 'kafka',\n" +
                 "  'connector.version' = 'universal',\n" +
-                "  'connector.topic' = 'work1',\n" +
-                "  'connector.startup-mode' = 'latest-offset',\n" +
+                "  'connector.topic' = 'yuanlong',\n" +
+                "  'connector.startup-mode' = 'earliest-offset',\n" +
                 "  'connector.properties.0.key' = 'zookeeper.connect',\n" +
                 "  'connector.properties.0.value' = '10.101.236.2:2181',\n" +
                 "  'connector.properties.1.key' = 'bootstrap.servers',\n" +
