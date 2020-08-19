@@ -97,6 +97,5 @@ public class DoInWuhan {
                 "  SWJGMC");
 
         // start
-        bsTableEnv.execute(jobName);
     }
 }
