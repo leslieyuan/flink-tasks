@@ -31,7 +31,7 @@ public class DoInWuhanHbase {
                 "  'connector' = 'hbase-1.4',\n" +
                 "  'table-name' = 't1',\n" +
                 "  'zookeeper.quorum' = 'hdp1.ambari:2181', \n" +
-                "  'connector.zookeeper.znode.parent' = '/hbase-unsecure',                                                 \n" +
+                "  'zookeeper.znode.parent' = '/hbase-unsecure',                                                 \n" +
                 "  'sink.buffer-flush.max-size' = '1mb',\n" +
                 "  'sink.buffer-flush.max-rows' = '5', \n" +
                 "  'sink.buffer-flush.interval' = '2s'\n" +
