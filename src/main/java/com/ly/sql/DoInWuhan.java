@@ -39,7 +39,7 @@ public class DoInWuhan {
                 " 'format' = 'json',\n" +
                 " 'scan.startup.mode' = 'earliest-offset',\n" +
                 " 'sink.partitioner' = 'round-robin'\n" +
-                ")");
+                ")", jobName);
 
         bsTableEnv.executeSql("CREATE TABLE T_YY_ZHDP_SWDJZTJK_BSTHXZL_LJS_yuanlong(\n" +
                 "  SJSWJG_DM VARCHAR,\n" +
@@ -63,7 +63,7 @@ public class DoInWuhan {
                 "  'sink.buffer-flush.max-rows' = '500',\n" +
                 "  'sink.buffer-flush.interval' = '2s',\n" +
                 "  'sink.max-retries' = '3'\n" +
-                ")");
+                ")", jobName);
 
         bsTableEnv.executeSql("INSERT INTO\n" +
                 "  T_YY_ZHDP_SWDJZTJK_BSTHXZL_LJS_yuanlong\n" +
@@ -94,7 +94,7 @@ public class DoInWuhan {
                 "  SJSWJG_DM,\n" +
                 "  SJSWJGMC,\n" +
                 "  SWJG_DM,\n" +
-                "  SWJGMC");
+                "  SWJGMC", jobName);
 
         // start
     }

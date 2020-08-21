@@ -14,18 +14,19 @@
 
     <dependencies>
         <!-- Either... -->
-        <dependency>
+        <!--dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-java-bridge_2.11</artifactId>
             <version>${flink.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency-->
         <!-- or.. (for the new Blink planner) -->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-planner-blink_2.11</artifactId>
             <version>${flink.version}</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/jar/flink-table-blink_2.11-1.11-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
