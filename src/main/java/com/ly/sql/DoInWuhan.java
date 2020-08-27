@@ -1,12 +1,8 @@
 package com.ly.sql;
 
-import org.apache.flink.api.common.restartstrategy.RestartStrategies;
-import org.apache.flink.api.common.time.Time;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
-
-import java.util.concurrent.TimeUnit;
 
 public class DoInWuhan {
     public static void main(String[] args) throws Exception {
@@ -14,61 +10,49 @@ public class DoInWuhan {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
-        env.enableCheckpointing(30000);
-        env.setRestartStrategy(RestartStrategies.fixedDelayRestart(5, Time.of(10, TimeUnit.SECONDS)));
 
-        String jobName = args[0];
+        tableEnv.sqlUpdate("create\n" +
+                "\ttable\n" +
+                "\t\twork1(\n" +
+                "\t\t\tFWSQRYMC VARCHAR\n" +
+                "\t\t) with(\n" +
+                "\t\t\t'connector.type' = 'kafka',\n" +
+                "\t\t\t'connector.version' = 'universal',\n" +
+                "\t\t\t'connector.topic' = 'xingneng',\n" +
+                "\t\t\t'connector.startup-mode' = 'earliest-offset',\n" +
+                "\t\t\t'connector.properties.0.key' = 'zookeeper.connect',\n" +
+                "\t\t\t'connector.properties.0.value' = '10.101.236.2:2181',\n" +
+                "\t\t\t'connector.properties.1.key' = 'bootstrap.servers',\n" +
+                "\t\t\t'connector.properties.1.value' = '10.101.236.2:6667',\n" +
+                "\t\t\t'connector.properties.2.key' = 'group.id',\n" +
+                "\t\t\t'connector.properties.2.value' = '02020062216021101400000101001103',\n" +
+                "\t\t\t'format.type' = 'json',\n" +
+                "\t\t\t'format.derive-schema' = 'true'\n" +
+                "\t\t)");
 
-        // source file
-        tableEnv.sqlUpdate("create table work1(\n" +
-                "  SJSWJG_DM STRING,\n" +
-                "  SLRYS STRING,\n" +
-                "  SWJG_DM STRING,\n" +
-                "  SLYWS STRING\n" +
-                ") with (\n" +
-                "  'connector.type' = 'kafka',\n" +
-                "  'connector.version' = 'universal',\n" +
-                "  'connector.topic' = 'yuanlong',\n" +
-                "  'connector.startup-mode' = 'earliest-offset',\n" +
-                "  'connector.properties.0.key' = 'zookeeper.connect',\n" +
-                "  'connector.properties.0.value' = '10.101.236.2:2181',\n" +
-                "  'connector.properties.1.key' = 'bootstrap.servers',\n" +
-                "  'connector.properties.1.value' = '10.101.236.2:6667',\n" +
-                "  'connector.properties.2.key' = 'group.id',\n" +
-                "  'connector.properties.2.value' = '02020080411124458000000101001100',\n" +
-                "  'format.type' = 'json',\n" +
-                "  'format.derive-schema' = 'true'\n" +
-                ")");
+        tableEnv.sqlUpdate("create\n" +
+                "\ttable\n" +
+                "\t\tschool(\n" +
+                "\t\t\tid varchar\n" +
+                "\t\t) WITH(\n" +
+                "\t\t\t'connector.type' = 'elasticsearch',\n" +
+                "\t\t\t'connector.version' = '6',\n" +
+                "\t\t\t'connector.hosts' = 'http://10.101.232.31:9200',\n" +
+                "\t\t\t'connector.index' = '8f474082877c41b5ab685355430abfbf_flink_local',\n" +
+                "\t\t\t'connector.document-type' = '_doc',\n" +
+                "\t\t\t'connector.bulk-flush.max-actions' = '1',\n" +
+                "\t\t\t'format.type' = 'json',\n" +
+                "\t\t\t'update-mode' = 'append'\n" +
+                "\t\t)");
 
-        // destination file
-        tableEnv.sqlUpdate("create table DM_GY_SWJG_LJS(SWJG_DM STRING, SWJGMC STRING, SWJGJC STRING) with (\n" +
-                "  'connector.type' = 'jdbc',\n" +
-                "  'connector.url' = 'jdbc:mysql://10.101.236.3:3306/binlog_test?useUnicode=true&characterEncoding=UTF-8',\n" +
-                "  'connector.table' = 'DM_GY_SWJG_LJS',\n" +
-                "  'connector.username' = 'remote',\n" +
-                "  'connector.password' = 'C1stc.0e',\n" +
-                "  'connector.write.flush.max-rows' = '1'\n" +
-                ")");
-
-        // doing
-        tableEnv.sqlUpdate("insert into\n" +
-                "  DM_GY_SWJG_LJS(SWJG_DM, SWJGMC, SWJGJC)\n" +
-                "select\n" +
-                "  SWJG_DM,\n" +
-                "  SJSWJG_DM,\n" +
-                "  SLYWS\n" +
-                "from\n" +
-                "  (\n" +
-                "    SELECT\n" +
-                "      UPPER(SJSWJG_DM) AS SJSWJG_DM,\n" +
-                "      SLRYS,\n" +
-                "      SWJG_DM,\n" +
-                "      SLYWS\n" +
-                "    FROM\n" +
-                "      work1\n" +
-                "  )");
+        tableEnv.sqlUpdate("insert\n" +
+                "\tinto\n" +
+                "\t\tschool(id) select\n" +
+                "\t\t\tFWSQRYMC\n" +
+                "\t\tfrom\n" +
+                "\t\t\twork1");
 
         // start
-        tableEnv.execute(jobName);
+        tableEnv.execute("heheda");
     }
 }
