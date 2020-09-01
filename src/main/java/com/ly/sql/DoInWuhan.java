@@ -11,6 +11,8 @@ public class DoInWuhan {
         EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, fsSettings);
 
+        String jobName = (args.length == 0 ? "no name" : args[0]);
+
         tableEnv.sqlUpdate("create\n" +
                 "\ttable\n" +
                 "\t\twork1(\n" +
@@ -53,6 +55,6 @@ public class DoInWuhan {
                 "\t\t\twork1");
 
         // start
-        tableEnv.execute("heheda");
+        tableEnv.execute(jobName);
     }
 }
