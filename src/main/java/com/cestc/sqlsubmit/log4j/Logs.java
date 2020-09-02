@@ -1,10 +1,8 @@
-package com.ly.log4j;
+package com.cestc.sqlsubmit.log4j;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * @author yuanlong
@@ -14,11 +12,12 @@ import java.io.IOException;
  */
 
 public class Logs {
-    private static final Logger log = LoggerFactory.getLogger(Logs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Logs.class);
 
-    public static void init() {
+    public static void init(String jobName) {
+        CestcJsonLayout.setRwid(jobName);
+        CestcJsonLayout.setRwLxDm("1");
         PropertyConfigurator.configure(Logs.class.getResourceAsStream("/log4j.properties"));
-        log.info("initial log success");
+        LOG.info("log initial finished");
     }
-
 }
