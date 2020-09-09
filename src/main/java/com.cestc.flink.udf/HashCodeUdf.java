@@ -10,6 +10,7 @@ public class HashCodeUdf extends ScalarFunction {
         return s == null ? 0 : s.hashCode() * factor;
     }
 
+    // test push
     public HashCodeUdf(int factor) {
         this.factor = factor;
     }
