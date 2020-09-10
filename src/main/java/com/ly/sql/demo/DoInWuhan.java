@@ -1,7 +1,7 @@
-package com.ly.sql;
+package com.ly.sql.demo;
 
 import com.cestc.sqlsubmit.log4j.Logs;
-import com.ly.SqlCommandParser;
+import com.ly.tools.SqlCommandParser;
 import com.ly.tools.ReadFile;
 import org.apache.flink.runtime.concurrent.FutureUtils;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

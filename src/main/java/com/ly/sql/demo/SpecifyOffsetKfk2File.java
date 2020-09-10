@@ -1,4 +1,4 @@
-package com.ly.sql;
+package com.ly.sql.demo;
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;

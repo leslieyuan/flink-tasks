@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="flink-tasks" />
         <module name="flink_demo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="flink-tasks" target="1.8" />
       <module name="flink_demo" target="1.8" />
     </bytecodeTargetLevel>
   </component>

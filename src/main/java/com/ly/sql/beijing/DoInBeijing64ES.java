@@ -1,12 +1,13 @@
-package com.ly.sql;
+package com.ly.sql.beijing;
 
+import com.ly.sql.demo.ParseNestedJsonWin;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DoInBeijing64HBase {
+public class DoInBeijing64ES {
     private static final Logger log = LoggerFactory.getLogger(ParseNestedJsonWin.class);
 
     public static void main(String[] args) throws Exception {
@@ -30,24 +31,31 @@ public class DoInBeijing64HBase {
                 "  'format.type' = 'json'\n" +
                 ")");
 
-        tableEnv.sqlUpdate("CREATE TABLE t_sink (\n" +
-                "  rowkey BIGINT,\n" +
-                "  f1 ROW<stu_id VARCHAR, stu_name VARCHAR, score DOUBLE, age BIGINT>\n" +
+        tableEnv.sqlUpdate("CREATE TABLE stuTable (\n" +
+                "  stu_id STRING,\n" +
+                "  stu_name STRING,\n" +
+                "  score DOUBLE,\n" +
+                "  age BIGINT\n" +
                 ") WITH (\n" +
-                "  'connector.type' = 'hbase',\n" +
-                "  'connector.version' = '1.4.3',\n" +
-                "  'connector.table-name' = 't1',\n" +
-                "  'connector.zookeeper.quorum' = 'hdp1.ambari:2181', \n" +
-                "  'connector.zookeeper.znode.parent' = '/hbase-unsecure',                                                 \n" +
-                "  'connector.write.buffer-flush.max-size' = '1mb',\n" +
-                "  'connector.write.buffer-flush.max-rows' = '5', \n" +
-                "  'connector.write.buffer-flush.interval' = '2s'\n" +
+                "  'connector.type' = 'elasticsearch', \n" +
+                "  'connector.version' = '6',\n" +
+                "  'connector.hosts' = 'http://hdp1.ambari:9200/',\n" +
+                "  'connector.index' = 'my-test',       \n" +
+                "  'connector.document-type' = 'user',    \n" +
+                "  'update-mode' = 'append',    \n" +
+                "  'connector.flush-on-checkpoint' = 'false', \n" +
+                "  'connector.bulk-flush.max-actions' = '1',\n" +
+                "  'connector.bulk-flush.max-size' = '1 mb',\n" +
+                "  'connector.bulk-flush.interval' = '1', \n" +
+                "  'connector.bulk-flush.backoff.max-retries' = '3',\n" +
+                "  'connector.bulk-flush.backoff.delay' = '1000',\n" +
+                "  'format.type' = 'json'\n" +
                 ")");
 
-        tableEnv.sqlUpdate("INSERT INTO t_sink\n" +
-                "SELECT UNIX_TIMESTAMP() AS rowkey, ROW(stu_id , stu_name, score, age) as f1\n" +
+        tableEnv.sqlUpdate("INSERT INTO stuTable\n" +
+                "SELECT stu_id , stu_name, score, age\n" +
                 "FROM person");
 
-        tableEnv.execute("test_hbase");
+        tableEnv.execute("test");
     }
 }
