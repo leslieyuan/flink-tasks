@@ -33,7 +33,8 @@ public class SqlCommandCallHelper {
         try {
             environment.sqlUpdate(ddl);
         } catch (SqlParserException e) {
-            throw new RuntimeException("SQL parse failed:\n" + ddl + "\n", e);
+            String errMsg = String.format("SQL parse failed:\n %s \n %s", ddl, e.getMessage());
+            throw new RuntimeException(errMsg);
         }
     }
 
@@ -42,7 +43,8 @@ public class SqlCommandCallHelper {
         try {
             environment.sqlUpdate(dml);
         } catch (SqlParserException e) {
-            throw new RuntimeException("SQL parse failed:\n" + dml + "\n", e);
+            String errMsg = String.format("SQL parse failed:\n %s \n %s", dml, e.getMessage());
+            throw new RuntimeException(errMsg);
         }
     }
 }
