@@ -1,4 +1,4 @@
-# flink_demo
+# flink-tasks
 some code about flink development
 
 ### kafka source
