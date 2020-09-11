@@ -20,15 +20,15 @@ create table t_kafka_flink_log(
 create table t_es_flink_log(
   rwid STRING,
   rz STRING,
-  rzsj STRING,
-  yxsj BIGINT,
+  yxsj STRING,
+  rzsj BIGINT,
   zt STRING,
   rzjb STRING
 ) with (
   'connector.type' = 'elasticsearch',
   'connector.version' = '6',
   'connector.hosts' = 'http://10.101.232.31:9200',
-  'connector.index' = 'flink_log',
+  'connector.index' = 'js_rw_log',
   'connector.document-type' = '_doc',
   'update-mode' = 'append',
   'connector.flush-on-checkpoint' = 'false',
@@ -40,12 +40,12 @@ create table t_es_flink_log(
   'format.type' = 'json'
 );
 INSERT INTO
-  t_es_flink_log(rwid, rz, rzsj, yxsj, zt, rzjb)
+  t_es_flink_log(rwid, rz, yxsj, rzsj, zt, rzjb)
 SELECT
   rwId AS rwid,
   nr AS rz,
-  sj AS rzsj,
-  UNIX_TIMESTAMP(sj) AS yxsj,
+  sj AS yxsj,
+  UNIX_TIMESTAMP(sj) * 1000 AS rzsj,
   CASE
     WHEN POSITION('FAILED' IN nr) <> 0 THEN 'FAILED'
     WHEN POSITION('CANCEL' IN nr) <> 0 THEN 'CANCEL'
