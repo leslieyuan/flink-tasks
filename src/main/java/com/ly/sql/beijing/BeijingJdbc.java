@@ -1,8 +1,9 @@
-package com.ly.sql.wuhan;
+package com.ly.sql.beijing;
 
 import com.cestc.sqlsubmit.log4j.Logs;
-import com.ly.tools.SqlCommandParser;
+import com.ly.sql.wuhan.WriteES;
 import com.ly.tools.ReadFile;
+import com.ly.tools.SqlCommandParser;
 import org.apache.flink.runtime.concurrent.FutureUtils;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
@@ -14,17 +15,14 @@ import java.util.List;
 
 import static com.ly.tools.SqlCommandCallHelper.callCommand;
 
-
-// a write to es flink sql jar task for PanLu
-//
-public class WriteES {
-    private static final Logger LOG = LoggerFactory.getLogger(WriteES.class);
-    private static final String sql = ReadFile.readFile2String("/write_es_wuhan.sql");
+public class BeijingJdbc {
+    private static final Logger LOG = LoggerFactory.getLogger(BeijingJdbc.class);
+    private static final String sql = ReadFile.readFile2String("/to_jdbc_beijing.sql");
     private StreamTableEnvironment tEnv;
     private String jobName;
 
     public static void main(String[] args) throws Exception {
-        WriteES task = new WriteES();
+        BeijingJdbc task = new BeijingJdbc();
         task.jobName = args.length == 0 ? "no name" : args[0];
         Logs.init(task.jobName);
         task.run();
@@ -47,4 +45,5 @@ public class WriteES {
             LOG.error(e.getMessage());
         }
     }
+
 }
