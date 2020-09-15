@@ -17,14 +17,14 @@ import static com.ly.tools.SqlCommandCallHelper.callCommand;
 
 // a write to es flink sql jar task for PanLu
 //
-public class WriteES {
-    private static final Logger LOG = LoggerFactory.getLogger(WriteES.class);
-    private static final String sql = ReadFile.readFile2String("/write_es_wuhan.sql");
+public class WuhanDemo {
+    private static final Logger LOG = LoggerFactory.getLogger(WuhanDemo.class);
+    private static final String sql = ReadFile.readFile2String("/wuhan_demo.sql");
     private StreamTableEnvironment tEnv;
     private String jobName;
 
     public static void main(String[] args) throws Exception {
-        WriteES task = new WriteES();
+        WuhanDemo task = new WuhanDemo();
         task.jobName = args.length == 0 ? "no name" : args[0];
         Logs.init(task.jobName);
         task.run();

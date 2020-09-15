@@ -16,7 +16,7 @@ import java.util.List;
 
 public class DoInWuhan {
     private static final Logger LOG = LoggerFactory.getLogger(DoInWuhan.class);
-    private static final String sql = ReadFile.readFile2String("/wuhan_test.sql");
+    private static final String sql = ReadFile.readFile2String("/wuhan_demo2.sql");
     private StreamTableEnvironment tEnv;
     private String jobName;
 

@@ -14,9 +14,13 @@ import java.util.List;
 
 import static com.ly.tools.SqlCommandCallHelper.callCommand;
 
+/**
+ * 实时计算日志处理任务
+ * 从kafka写到es
+ */
 public class FlinkLogSync {
     private static final Logger LOG = LoggerFactory.getLogger(FlinkLogSync.class);
-    private static final String sql = ReadFile.readFile2String("/log_k_2_es.sql");
+    private static final String sql = ReadFile.readFile2String("/log_js.sql");
     private StreamTableEnvironment tEnv;
     private String jobName;
 
