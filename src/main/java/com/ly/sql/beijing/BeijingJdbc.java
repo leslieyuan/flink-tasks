@@ -16,7 +16,7 @@ import static com.ly.tools.SqlCommandCallHelper.callCommand;
 
 public class BeijingJdbc {
     private static final Logger LOG = LoggerFactory.getLogger(BeijingJdbc.class);
-    private static final String sql = ReadFile.readFile2String("/beijing_demo.sql");
+    private static final String sql = ReadFile.readFile2String("/demo_beijing.sql");
     private StreamTableEnvironment tEnv;
     private String jobName;
 

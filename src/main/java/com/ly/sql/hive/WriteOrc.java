@@ -14,7 +14,7 @@ public class WriteOrc {
         StreamTableEnvironment bsTableEnv = StreamTableEnvironment.create(bsEnv, bsSettings);
 
         String createKafkaTableSQL = IOUtils.toString(WriteOrc.class.getResourceAsStream("/kafka_table.sql"));
-        String createFsTableSQL = IOUtils.toString(WriteOrc.class.getResourceAsStream("/wuhan_demo2.sql"));
+        String createFsTableSQL = IOUtils.toString(WriteOrc.class.getResourceAsStream("/demo_wuhan_2.sql"));
         String writeOrcSQL = IOUtils.toString(WriteOrc.class.getResourceAsStream("/write_orc.sql"));
 
     }

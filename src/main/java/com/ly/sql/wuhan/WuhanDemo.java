@@ -19,7 +19,7 @@ import static com.ly.tools.SqlCommandCallHelper.callCommand;
 //
 public class WuhanDemo {
     private static final Logger LOG = LoggerFactory.getLogger(WuhanDemo.class);
-    private static final String sql = ReadFile.readFile2String("/wuhan_demo.sql");
+    private static final String sql = ReadFile.readFile2String("/demo_wuhan.sql");
     private StreamTableEnvironment tEnv;
     private String jobName;
 
