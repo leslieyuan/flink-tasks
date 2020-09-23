@@ -64,8 +64,8 @@ create table t_es_flink_log(
   rzjb STRING
 ) with (
   'connector.type' = 'elasticsearch',
-  'connector.version' = '6',
-  'connector.hosts' = 'http://10.101.232.31:9200',
+  'connector.version' = '7',
+  'connector.hosts' = 'http://10.101.232.28:9200',
   'connector.index' = 'cj_rw_log',
   'connector.document-type' = '_doc',
   'update-mode' = 'append',
@@ -75,7 +75,9 @@ create table t_es_flink_log(
   'connector.bulk-flush.interval' = '1000',
   'connector.bulk-flush.backoff.max-retries' = '3',
   'connector.bulk-flush.backoff.delay' = '1000',
-  'format.type' = 'json'
+  'format.type' = 'json',
+  'connector.username' = 'elastic',
+  'connector.password' = 'Cestc@20200915'
 );
 INSERT INTO
   t_es_flink_log(rwid, rz, yxsj, rzsj, zt, rzjb)
@@ -83,7 +85,7 @@ SELECT
   rwId AS rwid,
   nr AS rz,
   sj AS yxsj,
-  UNIX_TIMESTAMP(sj) * 1000 AS rzsj,
+  TIMESTAMP_M(sj) AS rzsj,
   CASE
     WHEN POSITION('FAILED' IN nr) <> 0 THEN 'FAILED'
     WHEN POSITION('CANCEL' IN nr) <> 0 THEN 'CANCEL'
@@ -104,7 +106,7 @@ SELECT
   rwId AS rwid,
   nr AS rz,
   sj AS yxsj,
-  UNIX_TIMESTAMP(sj) * 1000 AS rzsj,
+  TIMESTAMP_M(sj) AS rzsj,
   CASE
     WHEN POSITION('FAILED' IN nr) <> 0 THEN 'FAILED'
     WHEN POSITION('CANCEL' IN nr) <> 0 THEN 'CANCEL'
@@ -125,7 +127,7 @@ SELECT
   rwId AS rwid,
   nr AS rz,
   sj AS yxsj,
-  UNIX_TIMESTAMP(sj) * 1000 AS rzsj,
+  TIMESTAMP_M(sj) AS rzsj,
   CASE
     WHEN POSITION('FAILED' IN nr) <> 0 THEN 'FAILED'
     WHEN POSITION('CANCEL' IN nr) <> 0 THEN 'CANCEL'
