@@ -42,7 +42,7 @@ create table ElasticSearch001(
   'connector.version' = '7',
   'connector.username' = 'elastic',
   'connector.password' = 'Cestc@20200915',
-  'connector.hosts' = 'http://10.101.232.31:9200',
+  'connector.hosts' = 'http://10.101.232.28:9200',
   'connector.index' = 'pl_test',
   'connector.document-type' = 'pl_test',
   'update-mode' = 'upsert',
