@@ -1,8 +1,8 @@
 package com.ly.sql.wuhan;
 
 import com.cestc.sqlsubmit.log4j.Logs;
-import com.ly.tools.SqlCommandParser;
 import com.ly.tools.ReadFile;
+import com.ly.tools.SqlCommandParser;
 import org.apache.flink.runtime.concurrent.FutureUtils;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
@@ -17,14 +17,14 @@ import static com.ly.tools.SqlCommandCallHelper.callCommand;
 
 // a write to es flink sql jar task for PanLu
 //
-public class WuhanDemo {
-    private static final Logger LOG = LoggerFactory.getLogger(WuhanDemo.class);
-    private static final String sql = ReadFile.readFile2String("/demo_wuhan_3.sql");
+public class WuhanDemoWriteEs {
+    private static final Logger LOG = LoggerFactory.getLogger(WuhanDemoWriteEs.class);
+    private static final String sql = ReadFile.readFile2String("/demo_wuhan_4.sql");
     private StreamTableEnvironment tEnv;
     private String jobName;
 
     public static void main(String[] args) throws Exception {
-        WuhanDemo task = new WuhanDemo();
+        WuhanDemoWriteEs task = new WuhanDemoWriteEs();
         task.jobName = args.length == 0 ? "no name" : args[0];
         Logs.init(task.jobName);
         task.run();
