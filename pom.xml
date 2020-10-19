@@ -81,6 +81,7 @@
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-log4j-appender</artifactId>
             <version>2.3.0</version>
+            <scope>provided</scope>
         </dependency>
         <!--dependency>
             <groupId>net.logstash.log4j</groupId>
