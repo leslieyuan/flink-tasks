@@ -13,6 +13,11 @@ import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+/**
+ * A write to kafka demo, which use a user define strategy.
+ * @author yuanlong 2020-10-20 17:14
+ * @version 1.0.0
+ */
 public class WriteKafkaSpecifiPartition {
     private static final String SOURCE_TOPIC = "work1";
     private static final String SINK_TOPIC = "yuanlongtest";
