@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -15,21 +16,48 @@ import org.apache.flink.streaming.api.scala.DataStream;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
 
 @Slf4j
 public abstract class BaseFlinkApp {
-    private static Properties properties;
-
+    private static Properties properties = new Properties();
     static {
-        InputStream inputStream = BaseFlinkApp.class.getClassLoader().getResourceAsStream("global.properties");
-        try {
-            properties.load(inputStream);
-        } catch (Exception e) {
-            log.error("Initial global map failed.");
-        }
+        properties.load(BaseFlinkApp.class.getClassLoader().getResourceAsStream());
+    }
 
+    public void execute(String taskName, String maxParall, String topic, String groupId, String path) throws Exception {
+        // flink conf
+        Configuration conf = getFlinkConf(taskName, maxParall);
+        StreamExecutionEnvironment bsEnv = new StreamExecutionEnvironment(conf);
+
+        // global parameter
+        setGlobalParameter(bsEnv, path);
+
+        // kafka source
+        FlinkKafkaConsumer<String> consumer = new FlinkKafkaConsumer<>(topic, new SimpleStringSchema(), getkafkaProperties(groupId));
+        consumer.setStartFromGroupOffsets();
+        DataStreamSource<String> source = bsEnv.addSource(consumer);
+
+        // translation
+        handleStream(bsEnv, source);
+
+        // start
+        bsEnv.execute(taskName);
+    }
+
+    public abstract void handleStream(StreamExecutionEnvironment env, DataStreamSource<String> source);
+
+    public static void setGlobalParameter(StreamExecutionEnvironment bs, String path) {
+        try {
+            File file = new File(path);
+            ParameterTool tool = ParameterTool.fromPropertiesFile(file);
+            bs.getConfig().setGlobalJobParameters(tool);
+        } catch (Exception e) {
+            // ignore
+            log.error("initial global config file failed.");
+        }
     }
 
     public Properties getkafkaProperties(String groupId) {
@@ -44,15 +72,4 @@ public abstract class BaseFlinkApp {
         configuration.set(PipelineOptions.OPERATOR_CHAINING, true);
         return configuration;
     }
-
-    public void setFlinkEnv() {
-
-    }
-
-    public void run(Configuration conf, String topic, String groupId) {
-
-
-    }
-
-
 }
