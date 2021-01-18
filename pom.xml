@@ -150,6 +150,11 @@
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-cep_2.11</artifactId>
+            <version>1.12.0</version>
+        </dependency>
     </dependencies>
 
     <build>
